@@ -1,0 +1,51 @@
+html,
+body {
+    background-color: #eeeeee;
+}
+body .container .content {
+    background-color: #ffffff;
+    padding: 20px;
+    margin-top: 60px;
+    margin-right: -30px;
+    /* negative indent the amount of the padding to maintain the grid system */
+
+    border-radius: 6px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.15);
+}
+body .container .content .relative {
+    position: relative;
+    margin-bottom: 40px;
+}
+body .container .content .relative .right-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+body .container .content #galettes th.name {
+    width: 80%;
+    min-width: 150px;
+}
+body .container .content #galettes th.edit {
+    with: 10%;
+    min-width: 20px;
+}
+body .container .content #galettes th.remove {
+    with: 10%;
+    min-width: 20px;
+}
+body .container .content #galettes td.edit {
+    text-align: center;
+}
+body .container .content #galettes td.remove {
+    text-align: center;
+}
+body .container .content form {
+    margin-bottom: 0px;
+}
+body .container .content form .form-actions {
+    background-color: #ffffff;
+    margin-bottom: 0px;
+}
+body .container footer p {
+    text-align: center;
+}
