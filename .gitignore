@@ -2,3 +2,4 @@ site/.htpasswd
 site/photos.old
 site/photos.new
 site/photos
+*.log
