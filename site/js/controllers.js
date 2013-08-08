@@ -13,6 +13,16 @@ albumApp.controller('AlbumController',
                 }
                 return 0;
             });
+
+            angular.forEach($scope.albums, function(album) {
+                album.maxDate = album.date;
+                angular.forEach(album.photos, function(photo) {
+                    if (album.maxDate < photo.date) {
+                        album.maxDate = photo.date;
+                    }
+                });
+
+            })
         });
     }
 );

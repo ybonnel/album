@@ -50,7 +50,14 @@ do
 		fi
 
 
-		echo "{\"name\":\"$photo\",\"lien\":\"$a/$photo\",\"mini\":\"$a/mini_$photo\"}" >> $DEST_REP.new/album.json
+		if [ "${CURRENT_OS}" = "Darwin" ]; then
+			DATE_PRISE=`exiftool -exif:DateTimeOriginal "$DEST_REP.new/$a/$photo" | cut -c 35-44 | sed "s/:/\//g"`
+		else
+			DATE_PRISE=`exif -t 0x9003 "$DEST_REP.new/$a/$photo" | grep Value | cut -d" " -f4 | sed "s/:/\//g"`
+		fi
+
+
+		echo "{\"name\":\"$photo\",\"date\":\"${DATE_PRISE}\",\"lien\":\"$a/$photo\",\"mini\":\"$a/mini_$photo\"}" >> $DEST_REP.new/album.json
 		if [ -f "$DEST_REP/$a/mini_$photo" ]; then
 			cp "$DEST_REP/$a/mini_$photo" "$DEST_REP.new/$a/mini_$photo"
 		else
