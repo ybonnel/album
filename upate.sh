@@ -57,22 +57,32 @@ do
 		fi
 
 
-		echo "{\"name\":\"$photo\",\"date\":\"${DATE_PRISE}\",\"lien\":\"$a/$photo\",\"mini\":\"$a/mini_$photo\"}" >> $DEST_REP.new/album.json
+		echo "{\"name\":\"$photo\",\"date\":\"${DATE_PRISE}\",\"lien\":\"$a/$photo\",\"mini\":\"$a/mini_$photo\",\"moy\":\"$a/moy_$photo\"}" >> $DEST_REP.new/album.json
 		if [ -f "$DEST_REP/$a/mini_$photo" ]; then
 			cp "$DEST_REP/$a/mini_$photo" "$DEST_REP.new/$a/mini_$photo"
 		else
 			if [ "${CURRENT_OS}" = "Darwin" ]; then
-				sips --resampleHeight 100 "$DEST_REP.new/$a/$photo" --out "$DEST_REP.new/$a/mini_$photo"
+				sips --resampleHeight 100 "$DEST_REP.new/$a/$photo" -s formatOptions low --out "$DEST_REP.new/$a/mini_$photo"
 			else
-				convert "$DEST_REP.new/$a/$photo" -geometry x100 "$DEST_REP.new/$a/mini_$photo"
+				convert "$DEST_REP.new/$a/$photo" -geometry x100 -quality 50% "$DEST_REP.new/$a/mini_$photo"
+			fi
+		fi
+
+		if [ -f "$DEST_REP/$a/moy_$photo" ]; then
+			cp "$DEST_REP/$a/moy_$photo" "$DEST_REP.new/$a/moy_$photo"
+		else
+			if [ "${CURRENT_OS}" = "Darwin" ]; then
+				sips --resampleHeight 500 "$DEST_REP.new/$a/$photo" -s formatOptions normal --out "$DEST_REP.new/$a/moy_$photo"
+			else
+				convert "$DEST_REP.new/$a/$photo" -geometry x500 -quality 50% "$DEST_REP.new/$a/moy_$photo"
 			fi
 		fi
 	done
 
 	if [ "${CURRENT_OS}" = "Darwin" ]; then
-		find "$DEST_REP.new/$a" -type f | grep -v mini | awk '{print "\""$0"\""}' | xargs zip -0 "$DEST_REP.new/$a.zip"
+		find "$DEST_REP.new/$a" -type f | grep -v mini | grep -v moy | awk '{print "\""$0"\""}' | xargs zip -0 "$DEST_REP.new/$a.zip"
 	else
-		find "$DEST_REP.new/$a" -type f  -printf "\"%h/%f\"\n" | grep -v mini | xargs zip -0 "$DEST_REP.new/$a.zip"
+		find "$DEST_REP.new/$a" -type f  -printf "\"%h/%f\"\n" | grep -v mini | grep -v moy | xargs zip -0 "$DEST_REP.new/$a.zip"
 	fi
 
 

@@ -14,15 +14,22 @@ albumApp.controller('AlbumController',
                 return 0;
             });
 
+            $scope.viewer = new PhotoViewer();
+
             angular.forEach($scope.albums, function(album) {
                 album.maxDate = album.date;
                 angular.forEach(album.photos, function(photo) {
                     if (album.maxDate < photo.date) {
                         album.maxDate = photo.date;
                     }
+                    $scope.viewer.add('/photos/' + photo.moy);
                 });
 
-            })
+            });
         });
+
+        $scope.viewShow = function() {
+            $scope.viewer.show(0);
+        };
     }
 );
