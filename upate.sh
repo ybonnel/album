@@ -68,7 +68,7 @@ do
 	done
 
 	mogrify -define jpeg:size=200x200 -path "$DEST_REP.new/$a/mini" -thumbnail x100 "$DEST_REP.new/$a/$photo/*.JPG"
-	mogrify -define jpeg:size=1000x1000 -path "$DEST_REP.new/$a/mini" -thumbnail x500 "$DEST_REP.new/$a/$photo/*.JPG"
+	mogrify -define jpeg:size=1000x1000 -path "$DEST_REP.new/$a/moy" -thumbnail x500 "$DEST_REP.new/$a/$photo/*.JPG"
 
 
 	if [ "${CURRENT_OS}" = "Darwin" ]; then
