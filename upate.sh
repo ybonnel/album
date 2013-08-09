@@ -38,6 +38,11 @@ do
 	mkdir "$DEST_REP.new/$a/mini"
 	mkdir "$DEST_REP.new/$a/moy"
 
+	if [ "${CURRENT_OS}" != "Darwin" ]; then
+		mogrify -define jpeg:size=200x200 -path "$DEST_REP.new/$a/mini" -thumbnail x100 "$DEST_REP.new/$a/$photo/*.JPG"
+		mogrify -define jpeg:size=1000x1000 -path "$DEST_REP.new/$a/moy" -thumbnail x500 "$DEST_REP.new/$a/$photo/*.JPG"
+	fi
+
 	ls -1 "$DEST_REP.new/$a" | grep -v mini | grep -v moy | while read photo
 	do
 		if [ $FIRST_PHOTO = 1 ]; then
@@ -52,23 +57,20 @@ do
 			echo "," >> $DEST_REP.new/album.json
 		fi
 
-
-		if [ "${CURRENT_OS}" = "Darwin" ]; then
-			DATE_PRISE=`exiftool -exif:DateTimeOriginal "$DEST_REP.new/$a/$photo" | cut -c 35-44 | sed "s/:/\//g"`
-		else
-			DATE_PRISE=`exif -t 0x9003 "$DEST_REP.new/$a/$photo" | grep Value | cut -d" " -f4 | sed "s/:/\//g"`
-		fi
-
-
-		echo "{\"name\":\"$photo\",\"date\":\"${DATE_PRISE}\",\"lien\":\"$a/$photo\",\"mini\":\"$a/mini/$photo\",\"moy\":\"$a/moy/$photo\"}" >> $DEST_REP.new/album.json
 		if [ "${CURRENT_OS}" = "Darwin" ]; then
 			sips --resampleHeight 100 "$DEST_REP.new/$a/$photo" -s formatOptions normal --out "$DEST_REP.new/$a/mini/$photo"
 			sips --resampleHeight 500 "$DEST_REP.new/$a/$photo" -s formatOptions normal --out "$DEST_REP.new/$a/moy/$photo"
+			DATE_PRISE=`exiftool -exif:DateTimeOriginal "$DEST_REP.new/$a/$photo" | cut -c 35-44 | sed "s/:/\//g"`
+			WIDTH=`sips -g pixelWidth "$DEST_REP.new/$a/mini/$photo" | tail -1 | cut -c 15-`
+		else
+			DATE_PRISE=`exif -t 0x9003 "$DEST_REP.new/$a/$photo" | grep Value | cut -d" " -f4 | sed "s/:/\//g"`
+			WIDTH=`identify -format '%w' "$DEST_REP.new/$a/mini/$photo"`
 		fi
+
+		echo "{\"name\":\"$photo\",\"date\":\"${DATE_PRISE}\",\"lien\":\"$a/$photo\",\"mini\":\"$a/mini/$photo\",\"moy\":\"$a/moy/$photo\",\"width\":\"${WIDTH}\"}" >> $DEST_REP.new/album.json
+		
 	done
 
-	mogrify -define jpeg:size=200x200 -path "$DEST_REP.new/$a/mini" -thumbnail x100 "$DEST_REP.new/$a/$photo/*.JPG"
-	mogrify -define jpeg:size=1000x1000 -path "$DEST_REP.new/$a/moy" -thumbnail x500 "$DEST_REP.new/$a/$photo/*.JPG"
 
 
 	if [ "${CURRENT_OS}" = "Darwin" ]; then
