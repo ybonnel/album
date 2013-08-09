@@ -17,12 +17,14 @@ albumApp.controller('AlbumController',
             $scope.viewer = new PhotoViewer();
 
             angular.forEach($scope.albums, function(album) {
+                album.viewer = new PhotoViewer();
                 album.maxDate = album.date;
                 angular.forEach(album.photos, function(photo) {
                     if (album.maxDate < photo.date) {
                         album.maxDate = photo.date;
                     }
                     $scope.viewer.add('/photos/' + photo.moy);
+                    album.viewer.add('/photos/' + photo.moy);
                 });
 
             });
@@ -30,6 +32,10 @@ albumApp.controller('AlbumController',
 
         $scope.viewShow = function() {
             $scope.viewer.show(0);
+        };
+
+        $scope.viewShowAlbum = function(album) {
+            album.viewer.show(0);
         };
     }
 );

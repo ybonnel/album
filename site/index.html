@@ -38,10 +38,13 @@
 
         <div class="content">
             <div ng-repeat="album in albums">
-                <h2>{{album.name}} ({{album.date}}<span ng-show="album.date !== album.maxDate"> - {{ album.maxDate }}</span>) <a class="btn btn-info" ng-href="photos/{{album.name}}.zip">Télécharger l'album complet</a></h2>
+                <h2>{{album.name}} ({{album.date}}<span ng-show="album.date !== album.maxDate"> - {{ album.maxDate }}</span>)
+                    <a class="btn btn-info" ng-href="photos/{{album.name}}.zip">Télécharger l'album complet</a>
+                    <a class="btn btn-info" ng-click="viewShowAlbum(album)">Diaporama</a>
+                </h2>
 
                 <a ng-repeat="photo in album.photos" ng-href="photos/{{photo.lien}}">
-                    <img ng-src="photos/{{photo.mini}}" style="height: 100px; margin-bottom: 5px" class="img-thumbnail"/>
+                    <img ng-src="photos/{{photo.mini}}" style="height: 100px; width: {{ photo.width }}px; margin-bottom: 5px" class="img-thumbnail"/>
                 </a>
 
             </div>
