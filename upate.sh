@@ -35,6 +35,9 @@ do
 
 	FIRST_PHOTO=1
 
+	mkdir "$DEST_REP.new/$a/mini"
+	mkdir "$DEST_REP.new/$a/moy"
+
 	ls -1 "$DEST_REP.new/$a" | grep -v mini | while read photo
 	do
 		if [ $FIRST_PHOTO = 1 ]; then
@@ -51,33 +54,22 @@ do
 
 
 		if [ "${CURRENT_OS}" = "Darwin" ]; then
-			DATE_PRISE=`exiftool -exif:DateTimeOriginal "$DEST_REP.new/$a/$photo" | cut -c 35-44 | sed "s/:/\//g"`
+		 mogrify -path mini -thumbnail x100 *.JPG	DATE_PRISE=`exiftool -exif:DateTimeOriginal "$DEST_REP.new/$a/$photo" | cut -c 35-44 | sed "s/:/\//g"`
 		else
 			DATE_PRISE=`exif -t 0x9003 "$DEST_REP.new/$a/$photo" | grep Value | cut -d" " -f4 | sed "s/:/\//g"`
 		fi
 
 
-		echo "{\"name\":\"$photo\",\"date\":\"${DATE_PRISE}\",\"lien\":\"$a/$photo\",\"mini\":\"$a/mini_$photo\",\"moy\":\"$a/moy_$photo\"}" >> $DEST_REP.new/album.json
-		if [ -f "$DEST_REP/$a/mini_$photo" ]; then
-			cp "$DEST_REP/$a/mini_$photo" "$DEST_REP.new/$a/mini_$photo"
-		else
-			if [ "${CURRENT_OS}" = "Darwin" ]; then
-				sips --resampleHeight 100 "$DEST_REP.new/$a/$photo" -s formatOptions low --out "$DEST_REP.new/$a/mini_$photo"
-			else
-				convert "$DEST_REP.new/$a/$photo" -geometry x100 -quality 50% "$DEST_REP.new/$a/mini_$photo"
-			fi
-		fi
-
-		if [ -f "$DEST_REP/$a/moy_$photo" ]; then
-			cp "$DEST_REP/$a/moy_$photo" "$DEST_REP.new/$a/moy_$photo"
-		else
-			if [ "${CURRENT_OS}" = "Darwin" ]; then
-				sips --resampleHeight 500 "$DEST_REP.new/$a/$photo" -s formatOptions normal --out "$DEST_REP.new/$a/moy_$photo"
-			else
-				convert "$DEST_REP.new/$a/$photo" -geometry x500 -quality 50% "$DEST_REP.new/$a/moy_$photo"
-			fi
+		echo "{\"name\":\"$photo\",\"date\":\"${DATE_PRISE}\",\"lien\":\"$a/$photo\",\"mini\":\"$a/mini/$photo\",\"moy\":\"$a/moy/$photo\"}" >> $DEST_REP.new/album.json
+		if [ "${CURRENT_OS}" = "Darwin" ]; then
+			sips --resampleHeight 100 "$DEST_REP.new/$a/$photo" -s formatOptions normal --out "$DEST_REP.new/$a/mini/$photo"
+			sips --resampleHeight 500 "$DEST_REP.new/$a/$photo" -s formatOptions normal --out "$DEST_REP.new/$a/moy/$photo"
 		fi
 	done
+
+	mogrify -path "$DEST_REP.new/$a/mini" -thumbnail x100 "$DEST_REP.new/$a/$photo/*.JPG"
+	mogrify -path "$DEST_REP.new/$a/mini" -thumbnail x500 "$DEST_REP.new/$a/$photo/*.JPG"
+
 
 	if [ "${CURRENT_OS}" = "Darwin" ]; then
 		find "$DEST_REP.new/$a" -type f | grep -v mini | grep -v moy | awk '{print "\""$0"\""}' | xargs zip -0 "$DEST_REP.new/$a.zip"
