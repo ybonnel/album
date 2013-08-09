@@ -24,7 +24,7 @@ FIRST_LINE=1
 
 CURRENT_OS=`uname`
 
-ls -1 $DEST_REP.new | grep -v json | grep -v mini | grep -v moy | while read a
+ls -1 $DEST_REP.new | grep -v json | while read a
 do 
 	if [ $FIRST_LINE = 1 ]; then
 		FIRST_LINE=0
@@ -38,7 +38,7 @@ do
 	mkdir "$DEST_REP.new/$a/mini"
 	mkdir "$DEST_REP.new/$a/moy"
 
-	ls -1 "$DEST_REP.new/$a" | grep -v mini | while read photo
+	ls -1 "$DEST_REP.new/$a" | grep -v mini | grep -v moy | while read photo
 	do
 		if [ $FIRST_PHOTO = 1 ]; then
 			FIRST_PHOTO=0
