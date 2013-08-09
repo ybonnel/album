@@ -54,7 +54,7 @@ do
 
 
 		if [ "${CURRENT_OS}" = "Darwin" ]; then
-		 mogrify -path mini -thumbnail x100 *.JPG	DATE_PRISE=`exiftool -exif:DateTimeOriginal "$DEST_REP.new/$a/$photo" | cut -c 35-44 | sed "s/:/\//g"`
+			DATE_PRISE=`exiftool -exif:DateTimeOriginal "$DEST_REP.new/$a/$photo" | cut -c 35-44 | sed "s/:/\//g"`
 		else
 			DATE_PRISE=`exif -t 0x9003 "$DEST_REP.new/$a/$photo" | grep Value | cut -d" " -f4 | sed "s/:/\//g"`
 		fi
@@ -67,8 +67,8 @@ do
 		fi
 	done
 
-	mogrify -path "$DEST_REP.new/$a/mini" -thumbnail x100 "$DEST_REP.new/$a/$photo/*.JPG"
-	mogrify -path "$DEST_REP.new/$a/mini" -thumbnail x500 "$DEST_REP.new/$a/$photo/*.JPG"
+	mogrify -define jpeg:size=200x200 -path "$DEST_REP.new/$a/mini" -thumbnail x100 "$DEST_REP.new/$a/$photo/*.JPG"
+	mogrify -define jpeg:size=1000x1000 -path "$DEST_REP.new/$a/mini" -thumbnail x500 "$DEST_REP.new/$a/$photo/*.JPG"
 
 
 	if [ "${CURRENT_OS}" = "Darwin" ]; then
