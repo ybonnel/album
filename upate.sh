@@ -24,7 +24,7 @@ FIRST_LINE=1
 
 CURRENT_OS=`uname`
 
-ls -1 $DEST_REP.new | grep -v json | while read a
+ls -1 $DEST_REP.new | grep -v json | grep -v mini | grep -v moy | while read a
 do 
 	if [ $FIRST_LINE = 1 ]; then
 		FIRST_LINE=0
